@@ -83,14 +83,13 @@ tail -F $LOGFILE | while read -r line; do
             count=$((count + 1))
         fi
 
-        # Remove the eisting entry for the IP from the temp file
-        sed -i "/^$ip/d" "$TEMPFILE"
+        # Update the temp file with the new count
+        sed -i "/^$ip/d" "$TEMPFILE" # Remove any existing entry for the IP
+        echo "$ip $count" >> "$TEMPFILE"
 
         # If the count exceeds or equals 3, ban the IP and remove it from the temp file
         if [ "$count" -ge 3 ]; then
             ban_ip "$ip"
-        else # Otherwise, add the IP and its count to the temp file
-            echo "$ip $count" >> "$TEMPFILE"
         fi
     fi
 done
